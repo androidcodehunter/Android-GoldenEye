@@ -32,7 +32,8 @@ import java.util.concurrent.Executors
 import kotlin.math.min
 
 const val TAG = "MainActivity"
-const val PREVIEW_DELAY = 500L
+const val SHUTTER_SOUND_AUDIO_FILE_PATH = "file:///system/media/audio/ui/camera_click.ogg"
+const val PREVIEW_DELAY = 300L
 const val VIDEO_START_DELAY = 500L
 
 @SuppressLint("SetTextI18n")
@@ -119,7 +120,7 @@ class MainActivity : AppCompatActivity() {
         val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
         val volume = audioManager.getStreamMaxVolume(AudioManager.STREAM_NOTIFICATION)
         if (volume != 0){
-            MediaPlayer.create(this, Uri.parse("file:///system/media/audio/ui/camera_click.ogg"))?.start()
+            MediaPlayer.create(this, Uri.parse(SHUTTER_SOUND_AUDIO_FILE_PATH))?.start()
         }
     }
 
