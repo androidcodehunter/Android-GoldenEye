@@ -30,6 +30,8 @@ import co.infinum.goldeneye.utils.LogDelegate
 import co.infinum.goldeneye.utils.LogDelegate.log
 import java.io.File
 
+const val TAG = "GoldenEye2Impl"
+
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 internal class GoldenEye2Impl(
     private val activity: Activity,

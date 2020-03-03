@@ -7,6 +7,7 @@ import android.app.Activity
 import android.graphics.Bitmap
 import android.hardware.Camera
 import android.os.Build
+import android.util.Log
 import android.view.TextureView
 import co.infinum.goldeneye.config.CameraConfig
 import co.infinum.goldeneye.config.CameraInfo
@@ -28,6 +29,8 @@ import co.infinum.goldeneye.utils.Intrinsics
 import co.infinum.goldeneye.utils.LogDelegate
 import co.infinum.goldeneye.utils.LogDelegate.log
 import java.io.File
+
+const val TAGS = "GoldenEye1Impl"
 
 internal class GoldenEye1Impl @JvmOverloads constructor(
     private val activity: Activity,
@@ -122,6 +125,10 @@ internal class GoldenEye1Impl @JvmOverloads constructor(
             override fun onError(t: Throwable) {
                 resetCameraPreview()
                 callback.onError(t)
+            }
+
+            override fun onShutter() {
+                callback.onShutter()
             }
 
             private fun resetCameraPreview() {

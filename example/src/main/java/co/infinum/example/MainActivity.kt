@@ -2,10 +2,13 @@ package co.infinum.example
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.SurfaceTexture
+import android.media.AudioManager
 import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -27,6 +30,10 @@ import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
 import java.util.concurrent.Executors
 import kotlin.math.min
+
+const val TAG = "MainActivity"
+const val PREVIEW_DELAY = 500L
+const val VIDEO_START_DELAY = 500L
 
 @SuppressLint("SetTextI18n")
 class MainActivity : AppCompatActivity() {
@@ -84,7 +91,9 @@ class MainActivity : AppCompatActivity() {
                     } else {
                         reducePictureSize(bitmap)
                     }
-                },
+                }, onShutter = {
+                playShutterSound()
+            },
                 onError = { it.printStackTrace() }
             )
         }
@@ -103,6 +112,14 @@ class MainActivity : AppCompatActivity() {
             val currentIndex = goldenEye.availableCameras.indexOfFirst { goldenEye.config?.id == it.id }
             val nextIndex = (currentIndex + 1) % goldenEye.availableCameras.size
             openCamera(goldenEye.availableCameras[nextIndex])
+        }
+    }
+
+    private fun playShutterSound() {
+        val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        val volume = audioManager.getStreamMaxVolume(AudioManager.STREAM_NOTIFICATION)
+        if (volume != 0){
+            MediaPlayer.create(this, Uri.parse("file:///system/media/audio/ui/camera_click.ogg"))?.start()
         }
     }
 
@@ -127,9 +144,10 @@ class MainActivity : AppCompatActivity() {
             setImageBitmap(bitmap)
             visibility = View.VISIBLE
         }
+
         mainHandler.postDelayed(
             { previewPictureView.visibility = View.GONE },
-            2000
+                PREVIEW_DELAY
         )
     }
 
@@ -238,7 +256,7 @@ class MainActivity : AppCompatActivity() {
                 mainHandler.postDelayed({
                     previewVideoContainer.visibility = View.GONE
                     release()
-                }, 1500)
+                }, VIDEO_START_DELAY)
             }
             setOnVideoSizeChangedListener { _, width, height ->
                 previewVideoView.apply {

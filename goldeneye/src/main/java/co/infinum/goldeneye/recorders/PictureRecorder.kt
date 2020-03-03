@@ -5,6 +5,8 @@ package co.infinum.goldeneye.recorders
 import android.app.Activity
 import android.graphics.Bitmap
 import android.hardware.Camera
+import android.os.Build
+import android.util.Log
 import co.infinum.goldeneye.PictureCallback
 import co.infinum.goldeneye.PictureConversionException
 import co.infinum.goldeneye.PictureTransformation
@@ -58,12 +60,14 @@ internal class PictureRecorder(
         try {
             val cameraShutterCallback = Camera.ShutterCallback { onShutter() }
             val cameraPictureCallback = Camera.PictureCallback { data, _ ->
+                Log.d("MainActivity", "Picture taken before " )
                 async(
-                    task = { transformBitmapTask(data) },
+                    task = { transformBitmapTask(data)
+                    },
                     onResult = { onResult(it) }
                 )
+                Log.d("MainActivity", "Picture taken after " )
             }
-
             camera.takePicture(cameraShutterCallback, null, cameraPictureCallback)
         } catch (t: Throwable) {
             callback.onError(t)
